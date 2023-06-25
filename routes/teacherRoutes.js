@@ -17,4 +17,8 @@ router.put('/:id', teacherController.update);
 // Delete a teacher
 router.delete('/:id', teacherController.remove);
 
+// Teacher login
+
+router.post('/login', teacherController.login);
+
 module.exports = router;

@@ -80,10 +80,32 @@ const deleteStudent = async (req, res) => {
   }
 };
 
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    // Find the student by email
+    const student = await Student.findOne({ email });
+    if (!student) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Check if the password matches
+    if (student.password !== password) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    res.json({ message: 'Login successful', student });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while logging in' });
+  }
+}
+
 module.exports = {
   createStudent,
   updateStudent,
   getAllStudents,
   getStudentById,
   deleteStudent,
+  login
 };

@@ -17,4 +17,7 @@ router.put('/:id', studentController.updateStudent);
 // Delete a student by ID
 router.delete('/:id', studentController.deleteStudent);
 
+// Student login
+router.post('/login', studentController.login);
+
 module.exports = router;

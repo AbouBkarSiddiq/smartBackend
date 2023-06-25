@@ -70,4 +70,26 @@ async function remove(req, res) {
   }
 }
 
-module.exports = { createTeacher, getSingle, getAll, update, remove };
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    // Find the teacher by email
+    const teacher = await Teacher.findOne({ email });
+    if (!teacher) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Check if the password matches
+    if (teacher.password !== password) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    res.json({ message: 'Login successful', teacher });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while logging in' });
+  }
+}
+
+
+module.exports = { createTeacher, getSingle, getAll, update, remove, login };
