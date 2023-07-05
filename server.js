@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const studentRoutes = require("./routes/studentRoutes.js")
 const teacherRoutes = require("./routes/teacherRoutes.js")
+const feedbackRoutes = require("./routes/feedbackRoutes.js")
 
 dotenv.config()
 
@@ -26,6 +27,8 @@ app.options('*', cors({
 
 app.use('/api/students', studentRoutes);
 app.use('/api/teachers', teacherRoutes);
+app.use('/api/feedback', feedbackRoutes);
+
 
 app.get("/", (req, res)=>{
   res.send("hello world")
