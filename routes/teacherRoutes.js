@@ -12,7 +12,7 @@ router.get('/:id', teacherController.getSingle);
 router.get('/', teacherController.getAll);
 
 // Update a teacher
-router.put('/:id', teacherController.update);
+router.put('/:id', teacherController.updatedTeacher);
 
 // Delete a teacher
 router.delete('/:id', teacherController.remove);
