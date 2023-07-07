@@ -3,7 +3,7 @@ const Student = require('../models/studentModel.js');
 // Create a new student
 const createStudent = async (req, res) => {
   try {
-    const { firstName, lastName, email, gender, subjects, password } = req.body;
+    const { firstName, lastName, email, gender, subjects, verified, blocked, password } = req.body;
     
     // Check if the email already exists
     const existingStudent = await Student.findOne({ email });
@@ -11,7 +11,7 @@ const createStudent = async (req, res) => {
       return res.status(400).json({ error: 'Email already exists' });
     }
 
-    const student = new Student({ firstName, lastName, email, gender, subjects, password });
+    const student = new Student({ firstName, lastName, email, gender, subjects, verified, blocked, password });
     const savedStudent = await student.save();
     res.status(201).json({ message: 'Student created successfully', student: savedStudent });
   } catch (error) {
@@ -22,7 +22,7 @@ const createStudent = async (req, res) => {
 // Update a student by ID
 const updateStudent = async (req, res) => {
   try {
-    const { firstName, lastName, email, gender, subjects, password } = req.body;
+    const { firstName, lastName, email, gender, subjects, verified, blocked, password } = req.body;
     
     // Check if the email already exists
     const existingStudent = await Student.findOne({ email });
@@ -32,7 +32,7 @@ const updateStudent = async (req, res) => {
 
     const student = await Student.findByIdAndUpdate(
       req.params.id,
-      { firstName, lastName, email, gender, subjects, password },
+      { firstName, lastName, email, gender, subjects, verified, blocked, password },
       { new: true }
     );
     if (!student) {
@@ -80,6 +80,46 @@ const deleteStudent = async (req, res) => {
   }
 };
 
+
+const verificationStatus = async (req, res) => {
+  try {
+    const { verified } = req.body;
+    const studentId = req.params.id;
+
+    console.log(verified, studentId)
+    // Find the student by ID
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    // Update the verified field
+    student.verified = verified;
+    const savedStudent = await student.save();
+
+    res.json({ message: 'Verification status updated successfully', student: savedStudent });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while updating the verification status' });
+  }
+};
+const blockedStatus = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+    student.blocked = req.body.blocked;
+    const savedStudent = await student.save();
+    res.json({ message: 'Blocked status updated successfully', student: savedStudent });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
 async function login(req, res) {
   try {
     const { email, password } = req.body;
@@ -107,5 +147,7 @@ module.exports = {
   getAllStudents,
   getStudentById,
   deleteStudent,
+  verificationStatus,
+  blockedStatus,
   login
 };
