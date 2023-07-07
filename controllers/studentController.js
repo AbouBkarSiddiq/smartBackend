@@ -1,26 +1,92 @@
 const Student = require('../models/studentModel.js');
 
-// Create a new student
 const createStudent = async (req, res) => {
   try {
-    const { firstName, lastName, email, gender, subjects, verified, blocked, password } = req.body;
-    
+    const { firstname, lastname, email, gender, subjects,verified, blocked, password} =
+      req.body;
+
     // Check if the email already exists
     const existingStudent = await Student.findOne({ email });
     if (existingStudent) {
-      return res.status(400).json({ error: 'Email already exists' });
+      res.send({ status: 400, message: { error: "Email already exists" } });
+    } else {
+      const newTec = await Student.collection.insertOne({
+        firstName: firstname,
+        lastName: lastname,
+        email: email,
+        gender: gender,
+        subjects: subjects,
+        verified: verified,
+        blocked: blocked,
+        password: password,
+      });
+      if (newTec) {
+        res.send({
+          status: 200,
+          user: newTec,
+        });
+      }
+      // console.log("new", n);
     }
-
-    const student = new Student({ firstName, lastName, email, gender, subjects, verified, blocked, password });
-    const savedStudent = await student.save();
-    res.status(201).json({ message: 'Student created successfully', student: savedStudent });
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred while creating the student' });
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the student" });
+  }
+};
+
+// Create a new student
+// const createStudent = async (req, res) => {
+//   try {
+//     const { firstName, lastName, email, gender, subjects, verified, blocked, password } = req.body;
+    
+//     // Check if the email already exists
+//     const existingStudent = await Student.findOne({ email });
+//     if (existingStudent) {
+//       return res.status(400).json({ error: 'Email already exists' });
+//     }
+
+//     const student = new Student({ firstName, lastName, email, gender, subjects, verified, blocked, password });
+//     const savedStudent = await student.save();
+//     res.status(201).json({ message: 'Student created successfully', student: savedStudent });
+//   } catch (error) {
+//     res.status(500).json({ error: 'An error occurred while creating the student' });
+//   }
+// };
+
+const updateStudent = async (req, res) => {
+  try {
+    const { firstname, lastname, email, gender, subjects, verified, blocked, password } = req.body;
+    const id = req.params.id;
+    console.log("id", id);
+    console.log("id", email);
+    const existingStudent = await Student.findOne({ email });
+    if (existingStudent && existingStudent._id.toString() !== req.params.id) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+    const student = await Student.findByIdAndUpdate(req.params.id);
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    } else {
+      ( student.email = email),
+        ( student.firstname = firstname),
+        ( student.lastname = lastname),
+        ( student.gender = gender),
+        ( student.verified = verified),
+        ( student.blocked = blocked),
+        ( student.subjects = subjects),
+         student.save();
+      res.json({ message: "student updated successfully",  student:  student });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the  student" });
   }
 };
 
 // Update a student by ID
-const updateStudent = async (req, res) => {
+const update = async (req, res) => {
   try {
     const { firstName, lastName, email, gender, subjects, verified, blocked, password } = req.body;
     
@@ -103,6 +169,7 @@ const verificationStatus = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while updating the verification status' });
   }
 };
+
 const blockedStatus = async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
