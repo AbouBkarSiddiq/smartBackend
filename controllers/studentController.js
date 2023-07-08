@@ -2,7 +2,7 @@ const Student = require('../models/studentModel.js');
 
 const createStudent = async (req, res) => {
   try {
-    const { firstname, lastname, email, gender, subjects,verified, blocked, password} =
+    const { firstName, lastName, email, gender, subjects, verified, blocked, password } =
       req.body;
 
     // Check if the email already exists
@@ -11,8 +11,8 @@ const createStudent = async (req, res) => {
       res.send({ status: 400, message: { error: "Email already exists" } });
     } else {
       const newTec = await Student.collection.insertOne({
-        firstName: firstname,
-        lastName: lastname,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         gender: gender,
         subjects: subjects,

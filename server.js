@@ -5,6 +5,8 @@ const cors = require("cors");
 const studentRoutes = require("./routes/studentRoutes.js")
 const teacherRoutes = require("./routes/teacherRoutes.js")
 const feedbackRoutes = require("./routes/feedbackRoutes.js")
+const newsRoutes = require("./routes/newsRoutes.js")
+const courseRoutes = require("./routes/courseRoutes.js")
 
 dotenv.config()
 
@@ -28,7 +30,8 @@ app.options('*', cors({
 app.use('/api/students', studentRoutes);
 app.use('/api/teachers', teacherRoutes);
 app.use('/api/feedback', feedbackRoutes);
-
+app.use('/api/news', newsRoutes);
+app.use('/api/course', courseRoutes);
 
 app.get("/", (req, res)=>{
   res.send("hello world")
@@ -40,7 +43,11 @@ mongoose
       // useCreateIndex: true,
       // useUnifiedTopology: true
   })
-  .then(() => console.log('DB Connected'));
+  .then(() => console.log('DB Connected'))
+  .catch((error) => {
+    console.error('MongoDB connection error:', error);
+  });
+
 
 
 const port = process.env.PORT || 8080;

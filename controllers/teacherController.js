@@ -4,7 +4,6 @@ const createTeacher = async (req, res) => {
   try {
     const { firstname, lastname, email, gender, subjects, password, degree } =
       req.body;
-
     // Check if the email already exists
     const existingTeacher = await Teacher.findOne({ email });
     if (existingTeacher) {
@@ -103,7 +102,7 @@ const update = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ error: "An error occurred while updating the  teacher" });
+      .json({ error: "An error occurred while updating the teacher"});
   }
 };
 
